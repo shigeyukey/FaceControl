@@ -8,6 +8,14 @@ This addon allows you to control Anki using face movements, providing a hands-fr
 - **Undo (Ctrl+Z)**: Look far left.
 - **Scroll**: Move your head up or down to scroll the content.
 
+## Installation
+1. Download the addon and extract it into your Anki addons folder:
+   - Windows: `C:\Users\<YourUsername>\AppData\Roaming\Anki2\addons21`
+   - macOS: `~/Library/Application Support/Anki2/addons21`
+   - Linux: `~/.local/share/Anki2/addons21`
+2. Ensure the `resources/shape_predictor.dat` file is in the `resources` folder within the addon directory.
+3. Restart Anki.
+
 ## Usage
 1. Open Anki.
 2. Navigate to `Tools > Toggle Face Control` to enable or disable the addon.
