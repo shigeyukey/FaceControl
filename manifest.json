@@ -1,4 +1,6 @@
 {
     "package": "FaceControl",
-    "name": "FaceControl"
+    "name": "FaceControl",
+    "author": "Aarsh Gajjar",
+    "homepage": "https://github.com/AarshGajjar/FaceControl"
 }
