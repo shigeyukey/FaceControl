@@ -1,0 +1,18 @@
+{
+    "package": "FaceControl",
+    "name": "Face Control for Anki",
+    "description": "Control Anki using face movements with a webcam. Hands-free interaction for a seamless experience.",
+    "mod": 2024122200,
+    "max_point_version": 56,
+    "min_point_version": 0,
+    "author": "Your Name",
+    "version": "1.0.0",
+    "homepage": "https://github.com/AarshGajjar/FaceControl",
+    "tags": ["productivity", "accessibility", "customization"],
+    "license": "MIT",
+    "require_restart": true,
+    "config": {
+      "enabled": true
+    }
+  }
+  
