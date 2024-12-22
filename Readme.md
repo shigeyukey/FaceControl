@@ -3,9 +3,9 @@
 This addon allows you to control Anki using face movements, providing a hands-free interaction experience. The addon uses a webcam to track facial landmarks and maps specific face movements to Anki actions.
 
 ## Features
-- **Next Card (Space)**: Look left.
-- **Mark as "Good" (1)**: Look slightly right.
-- **Undo (Ctrl+Z)**: Look far right.
+- **Show answer/Mark as "Good" (Space)**: Look Good.
+- **Mark as "Again" (1)**: Look slightly left.
+- **Undo (Ctrl+Z)**: Look far left.
 - **Scroll**: Move your head up or down to scroll the content.
 
 ## Installation
