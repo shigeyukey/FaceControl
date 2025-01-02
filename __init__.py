@@ -16,15 +16,14 @@ from .facecontrol import start_face_control, stop_face_control
 face_control_event = Event()
 
 def toggle_face_control():
-    """Toggle face control (start or stop)."""
-    if face_control_event.is_set():  # Stop it if it's running
-        face_control_event.clear() # Signal the thread to stop
+    if face_control_event.is_set():
+        face_control_event.clear()
         stop_face_control()
         QMessageBox.information(mw, "Face Control", "Face control has been disabled.")
-    else:  # Start it if it's not running
+    else:
         try:
-            face_control_event.set() # Signal the thread to run
-            Thread(target=start_face_control, daemon=True).start()  # Run in a separate thread
+            face_control_event.set()
+            start_face_control()
             QMessageBox.information(mw, "Face Control", "Face control has been enabled.")
         except Exception as e:
             QMessageBox.critical(
@@ -32,6 +31,7 @@ def toggle_face_control():
                 "Face Control Error",
                 f"An error occurred: {e}"
             )
+
 def run_face_control():
     """Run the face control loop, respecting the event."""
     while face_control_event.is_set():
