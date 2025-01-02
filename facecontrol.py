@@ -1,6 +1,5 @@
 import cv2
 import dlib
-import pyautogui
 import time
 import os
 import traceback
