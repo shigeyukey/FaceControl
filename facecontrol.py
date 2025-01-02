@@ -5,6 +5,8 @@ import time
 import os
 import traceback
 
+from .ui_control import facecontrol_queue
+
 # Initialize face detector and predictor
 detector = dlib.get_frontal_face_detector()
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -57,21 +59,23 @@ def face_control_loop():
 
                     # Throttle input commands
                     current_time = time.time()
-                    if current_time - last_action_time > 0.5:  # 500ms cooldown
+
+                    if current_time - last_action_time > 2:  # 500ms cooldown
                         if horizontal_diff > 50:
-                            pyautogui.hotkey('ctrl', 'z')  # Undo
+                            facecontrol_queue.put(('undo',))
                         elif horizontal_diff > 20:
-                            pyautogui.press('1')         # Again
+                            facecontrol_queue.put(('Again'))
                         elif horizontal_diff < -20:
-                            pyautogui.press('space')       # Show card, Good
-                                            
+                            facecontrol_queue.put(('space',))
+
                         last_action_time = current_time
-                    
+
                     if vertical_diff > 10:
-                            pyautogui.scroll(-100)         # Scroll down
+                        facecontrol_queue.put(('scrollUp'))
                     elif vertical_diff < -10:
-                            pyautogui.scroll(100)          # Scroll up
-                    
+                        facecontrol_queue.put(('scrollDown'))
+
+
                 except Exception as e:
                     print(f"Error processing face landmarks: {e}")
                     traceback.print_exc()
