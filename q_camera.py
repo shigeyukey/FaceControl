@@ -71,9 +71,9 @@ class ImageProcessingWorker(QThread):
                     self.last_action_time = current_time
 
                 if vertical_diff > 10:
-                    facecontrol_queue.put(('scrollDown', 4))
+                    facecontrol_queue.put(('scrollDown'))
                 elif vertical_diff < -10:
-                    facecontrol_queue.put(('scrollUp', 4))
+                    facecontrol_queue.put(('scrollUp'))
 
         except Exception as e:
             print(f"Error: {e}")
