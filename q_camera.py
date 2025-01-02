@@ -64,7 +64,7 @@ class ImageProcessingWorker(QThread):
                     if horizontal_diff > 50:
                         facecontrol_queue.put(('undo'))
                     elif horizontal_diff > 20:
-                        facecontrol_queue.put(('answer', 1)) # Again
+                        facecontrol_queue.put(('Again')) # Again
                     elif horizontal_diff < -20:
                         facecontrol_queue.put(('space')) # Good
 
