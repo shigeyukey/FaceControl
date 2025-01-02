@@ -58,14 +58,13 @@ class ImageProcessingWorker(QThread):
 
                 current_time = time.time()
 
-                print(f"X:{horizontal_diff} Y:{vertical_diff}")
+                # print(f"X:{horizontal_diff} Y:{vertical_diff}")
 
                 if current_time - self.last_action_time > 0.5:  # 500ms cooldown
                     if horizontal_diff > 50:
                         facecontrol_queue.put(("undo"))
-                        print("undo")
                     elif horizontal_diff > 20:
-                        facecontrol_queue.put(("Again")) # Again
+                        facecontrol_queue.put(("Again"))
                     elif horizontal_diff < -20:
                         facecontrol_queue.put(("space")) # Good
 
