@@ -37,7 +37,7 @@ def run_face_control():
     while face_control_event.is_set():
         start_face_control()
     stop_face_control() #Ensure cleanup when stopping
-    
+
 # Add the menu option to toggle face control
 action = QAction("Toggle Face Control", mw)
 action.triggered.connect(toggle_face_control)

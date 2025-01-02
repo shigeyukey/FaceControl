@@ -37,14 +37,14 @@ def process_ui_queue():
                     elif command == "Easy":
                         mw.reviewer._answerCard(4)
 
-            elif command[0] == 'space':
+            elif command[0] == "space":
                 mw.reviewer.onEnterKey()
-            elif command[0] == 'undo':
+            elif command[0] == "undo":
                 if mw.undo_actions_info().can_undo:
                     mw.undo()
-            elif command[0] == 'scrollUp':
+            elif command[0] == "scrollUp":
                 scrollUp()
-            elif command[0] == 'scrollDown':
+            elif command[0] == "scrollDown":
                 scrollDown()
 
 facecontrol_timer = QTimer()

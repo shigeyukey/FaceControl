@@ -62,18 +62,19 @@ class ImageProcessingWorker(QThread):
 
                 if current_time - self.last_action_time > 0.5:  # 500ms cooldown
                     if horizontal_diff > 50:
-                        facecontrol_queue.put(('undo'))
+                        facecontrol_queue.put(("undo"))
+                        print("undo")
                     elif horizontal_diff > 20:
-                        facecontrol_queue.put(('Again')) # Again
+                        facecontrol_queue.put(("Again")) # Again
                     elif horizontal_diff < -20:
-                        facecontrol_queue.put(('space')) # Good
+                        facecontrol_queue.put(("space")) # Good
 
                     self.last_action_time = current_time
 
                 if vertical_diff > 10:
-                    facecontrol_queue.put(('scrollDown'))
+                    facecontrol_queue.put(("scrollDown"))
                 elif vertical_diff < -10:
-                    facecontrol_queue.put(('scrollUp'))
+                    facecontrol_queue.put(("scrollUp"))
 
         except Exception as e:
             print(f"Error: {e}")
