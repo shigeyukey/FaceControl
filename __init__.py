@@ -10,7 +10,7 @@ if lib_dir not in sys.path:
 
 from aqt import mw
 from aqt.qt import QAction, QMessageBox
-from threading import Thread, Event
+from threading import Event
 from .facecontrol import start_face_control, stop_face_control
 
 face_control_event = Event()
