@@ -1,21 +1,33 @@
-import sys
-import os
 
-# Add the lib folder to sys.path
-addon_dir = os.path.dirname(__file__)
-lib_dir = os.path.join(addon_dir, "lib")
-
-if lib_dir not in sys.path:
-    sys.path.insert(0, lib_dir)
+from threading import Event
 
 from aqt import mw
 from aqt.qt import QAction, QMessageBox
-from threading import Event
-from .facecontrol import start_face_control, stop_face_control
+from aqt.utils import tooltip
+
+from .wheel_importer import import_module, check_imports, get_is_download_wheel
+
+first_run = True
 
 face_control_event = Event()
 
 def toggle_face_control():
+    global first_run
+    if first_run:
+        yes = import_module()
+        if yes:
+            first_run = False
+
+    if get_is_download_wheel():
+        tooltip("Now loading, please wait...")
+        return
+
+    if not check_imports():
+        tooltip("Error: Module import failed.")
+        return
+
+
+    from .facecontrol import start_face_control, stop_face_control
     if face_control_event.is_set():
         face_control_event.clear()
         stop_face_control()
@@ -31,12 +43,6 @@ def toggle_face_control():
                 "Face Control Error",
                 f"An error occurred: {e}"
             )
-
-def run_face_control():
-    """Run the face control loop, respecting the event."""
-    while face_control_event.is_set():
-        start_face_control()
-    stop_face_control() #Ensure cleanup when stopping
 
 # Add the menu option to toggle face control
 action = QAction("Toggle Face Control", mw)

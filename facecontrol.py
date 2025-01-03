@@ -8,8 +8,8 @@ from aqt import mw
 
 # Initialize face detector and predictor
 detector = dlib.get_frontal_face_detector()
-current_dir = os.path.dirname(os.path.abspath(__file__))
-shape_predictor_path = os.path.join(current_dir, "resources", "shape_predictor.dat")
+addon_path = os.path.dirname(__file__)
+shape_predictor_path = os.path.join(addon_path,  "user_files", "resources", "shape_predictor.dat")
 predictor = dlib.shape_predictor(shape_predictor_path)
 
 # Global flag to control the face control loop
