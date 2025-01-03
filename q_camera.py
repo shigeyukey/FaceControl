@@ -45,6 +45,8 @@ class ImageProcessingWorker(QThread):
     def processed_face_control(self, gray:QImage):
         try:
             if not self.get_face_control_running():
+                self.reference_point = None
+                self.last_action_time = time.time()
                 return
 
             faces = self.detector(gray)
