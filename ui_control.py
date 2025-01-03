@@ -55,7 +55,7 @@ def process_ui_queue():
         if not facecontrol_queue.empty():
             command = facecontrol_queue.get()
             if command not in ["scrollUp", "scrollDown"]:
-                tooltip(f"{command} (test)")
+                tooltip(f"{command} <span style='color:gray;'>(test)</span>")
 
 facecontrol_timer = QTimer()
 facecontrol_timer.timeout.connect(process_ui_queue)
