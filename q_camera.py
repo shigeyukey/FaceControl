@@ -24,6 +24,7 @@ class ImageProcessingWorker(QThread):
 
         self.reference_point = None
         self.last_action_time = time.time()
+        self.need_cooldown = False
 
     def run(self):
         while True:
@@ -58,17 +59,24 @@ class ImageProcessingWorker(QThread):
 
                 horizontal_diff, vertical_diff = self.calculate_movement(landmarks, self.reference_point)
 
+                if horizontal_diff < 20 and vertical_diff < 20 and horizontal_diff > -20 and vertical_diff > -20:
+                    # Disable cooldown if user looks at the front.
+                    self.need_cooldown = False
+
                 current_time = time.time()
 
                 # print(f"X:{horizontal_diff} Y:{vertical_diff}")
 
-                if current_time - self.last_action_time > 0.5:  # 500ms cooldown
+                if current_time - self.last_action_time > 0.5 and not self.need_cooldown:  # 500ms cooldown
+                    self.need_cooldown = True # If answered, enable cooldown and disables control.
                     if horizontal_diff > 50:
                         facecontrol_queue.put(("undo"))
                     elif horizontal_diff > 20:
                         facecontrol_queue.put(("Again"))
                     elif horizontal_diff < -20:
                         facecontrol_queue.put(("space")) # Good
+                    else:
+                        self.need_cooldown = False # If no answer, the enable cooldown is canceled.
 
                     self.last_action_time = current_time
 
