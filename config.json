@@ -1,0 +1,6 @@
+{
+    "threshold_h": 20,
+    "threshold_v": 10,
+    "threshold_undo": 50,
+    "cooldown": 1
+}

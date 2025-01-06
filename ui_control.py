@@ -7,6 +7,17 @@ from aqt.qt import QTimer
 from aqt.utils import tooltip
 
 facecontrol_queue = Queue()
+scroll_queue = Queue()
+
+
+def reset_queue():
+    if not facecontrol_queue.empty():
+        facecontrol_queue.get()
+
+def reset_scroll_queue():
+    if not scroll_queue.empty():
+        scroll_queue.get()
+
 
 def scrollUp():
     mw.web.eval("""
@@ -40,15 +51,17 @@ def process_ui_queue():
                         mw.reviewer._answerCard(3)
                     elif command == "Easy":
                         mw.reviewer._answerCard(4)
-
             elif command == "space":
                 mw.reviewer.onEnterKey()
             elif command == "undo":
                 if mw.undo_actions_info().can_undo:
                     mw.undo()
-            elif command == "scrollUp":
+
+        elif not scroll_queue.empty():
+            s_command = scroll_queue.get()
+            if s_command == "scrollUp":
                 scrollUp()
-            elif command == "scrollDown":
+            elif s_command == "scrollDown":
                 scrollDown()
 
     elif mw.state in ["deckBrowser", "overview"]:

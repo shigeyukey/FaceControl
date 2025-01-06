@@ -2,11 +2,12 @@ import time
 import traceback
 from queue import Queue
 
+from aqt import mw
 from aqt.qt import QDialog, QVBoxLayout,  pyqtSignal, QThread, QImage, Qt, QTimer, pyqtSlot
 from PyQt6.QtMultimedia import QMediaDevices, QMediaCaptureSession, QCamera, QImageCapture
 from PyQt6.QtMultimediaWidgets import QVideoWidget
 
-from .ui_control import facecontrol_queue
+from .ui_control import facecontrol_queue, scroll_queue, reset_queue, reset_scroll_queue
 import numpy as np
 
 class ImageProcessingWorker(QThread):
@@ -37,6 +38,7 @@ class ImageProcessingWorker(QThread):
                 arr = np.array(ptr).reshape(image.height(), image.width(), 4)
                 gray = np.dot(arr[...,:3], [0.299, 0.587, 0.114]).astype(np.uint8)
                 self.processed_face_control(gray)
+                time.sleep(0.1)
 
             except Exception as e:
                 print(f"Error: {e}")
@@ -48,7 +50,14 @@ class ImageProcessingWorker(QThread):
             if not self.get_face_control_running():
                 self.reference_point = None
                 self.last_action_time = time.time()
+                self.need_cooldown = False
                 return
+
+            config = mw.addonManager.getConfig(__name__)
+            threshold_h = config.get("threshold_h", 20)
+            threshold_v = config.get("threshold_v", 10)
+            threshold_undo = config.get("threshold_undo", 50)
+            cooldown = config.get("cooldown", 0.5)
 
             faces = self.detector(gray)
 
@@ -59,31 +68,37 @@ class ImageProcessingWorker(QThread):
 
                 horizontal_diff, vertical_diff = self.calculate_movement(landmarks, self.reference_point)
 
-                if horizontal_diff < 20 and vertical_diff < 20 and horizontal_diff > -20 and vertical_diff > -20:
+
+                if (horizontal_diff < threshold_h and vertical_diff < threshold_v
+                    and horizontal_diff > -threshold_h and vertical_diff > -threshold_v):
                     # Disable cooldown if user looks at the front.
                     self.need_cooldown = False
-
                 current_time = time.time()
 
-                # print(f"X:{horizontal_diff} Y:{vertical_diff}")
+                print(f" X:{horizontal_diff} Y:{vertical_diff} C:{self.need_cooldown}")
 
-                if current_time - self.last_action_time > 0.5 and not self.need_cooldown:  # 500ms cooldown
+                if current_time - self.last_action_time > cooldown and not self.need_cooldown:  # 500ms cooldown
                     self.need_cooldown = True # If answered, enable cooldown and disables control.
-                    if horizontal_diff > 50:
-                        facecontrol_queue.put(("undo"))
-                    elif horizontal_diff > 20:
-                        facecontrol_queue.put(("Again"))
-                    elif horizontal_diff < -20:
-                        facecontrol_queue.put(("space")) # Good
+                    if horizontal_diff > threshold_undo:
+                        reset_queue()
+                        facecontrol_queue.put("undo")
+                    elif horizontal_diff > threshold_h:
+                        reset_queue()
+                        facecontrol_queue.put("Again")
+                    elif horizontal_diff < -threshold_h:
+                        reset_queue()
+                        facecontrol_queue.put("space") # Good
                     else:
                         self.need_cooldown = False # If no answer, the enable cooldown is canceled.
 
                     self.last_action_time = current_time
 
-                if vertical_diff > 10:
-                    facecontrol_queue.put(("scrollDown"))
-                elif vertical_diff < -10:
-                    facecontrol_queue.put(("scrollUp"))
+                if vertical_diff > threshold_v:
+                    reset_scroll_queue()
+                    scroll_queue.put("scrollDown")
+                elif vertical_diff < -threshold_v:
+                    reset_scroll_queue()
+                    scroll_queue.put("scrollUp")
 
         except Exception as e:
             print(f"Error: {e}")
