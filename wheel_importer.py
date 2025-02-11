@@ -88,7 +88,6 @@ def download_wheel():
 
     linux_pillow_x86_64 = "https://files.pythonhosted.org/packages/75/fb/e330fdbbcbc4744214b5f53b84d9d8a9f4ffbebc2e9c2ac10475386e3296/pillow-11.1.0-cp39-cp39-manylinux_2_28_x86_64.whl"
 
-
     ### Mac pyobjc ###  (it's needed for pyautogui with Mac.)
     # Mac pyobjc-core
     mac_pyobjc_core_wheel = "https://files.pythonhosted.org/packages/14/ba/1c459d0f1fc4c80314040ea6efea433c0641adffa6701679ec3a917b51a3/pyobjc_core-11.0-cp39-cp39-macosx_10_9_universal2.whl"
