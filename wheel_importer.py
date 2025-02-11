@@ -70,6 +70,9 @@ def download_wheel():
     # This module does not have a C extension so it is put in Add-on in advance.
     # https://github.com/asweigart/pyautogui
 
+    # NOTE: Remove the "mouseinfo" module because it's incompatible with Anki's PyQt (requires Tkinter)
+    #       Error occurs on Linux, Winodows is fine.
+
 
     ### Pillow ### (it's needed for pyautogui.)
     # win
