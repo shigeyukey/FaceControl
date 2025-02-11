@@ -5,7 +5,6 @@ import time
 import os
 import traceback
 
-
 # Initialize face detector and predictor
 detector = dlib.get_frontal_face_detector()
 addon_path = os.path.dirname(__file__)
@@ -61,22 +60,18 @@ def face_control_loop():
                     if current_time - last_action_time > 0.5:  # 500ms cooldown
                         if horizontal_diff > 50:
                             pyautogui.hotkey('ctrl', 'z')  # Undo
-                            print("undo")
                         elif horizontal_diff > 20:
                             pyautogui.press('1')         # Again
-                            print("1")
                         elif horizontal_diff < -20:
                             pyautogui.press('space')       # Show card, Good
-                            print("space")
+                                            
                         last_action_time = current_time
-
+                    
                     if vertical_diff > 10:
                             pyautogui.scroll(-100)         # Scroll down
-                            print("scroll -100")
                     elif vertical_diff < -10:
                             pyautogui.scroll(100)          # Scroll up
-                            print("scroll 100")
-
+                    
                 except Exception as e:
                     print(f"Error processing face landmarks: {e}")
                     traceback.print_exc()
