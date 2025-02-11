@@ -3,3 +3,4 @@ __pycache__
 /meta.json
 *.zip
 *.ankiaddon
+/lib/mac_lib/

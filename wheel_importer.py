@@ -90,11 +90,16 @@ def download_wheel():
 
 
     ### Mac pyobjc ###  (it's needed for pyautogui with Mac.)
-    # https://github.com/ronaldoussoren/pyobjc
-    mac_pyobjc_wheel = "https://files.pythonhosted.org/packages/18/55/d0971bccf8a5a347eaccf8caa4718766a68281baab83d2b5e211b2767504/pyobjc-11.0-py3-none-any.whl"
-
     # Mac pyobjc-core
     mac_pyobjc_core_wheel = "https://files.pythonhosted.org/packages/14/ba/1c459d0f1fc4c80314040ea6efea433c0641adffa6701679ec3a917b51a3/pyobjc_core-11.0-cp39-cp39-macosx_10_9_universal2.whl"
+
+    # pyobjc
+    # https://github.com/ronaldoussoren/pyobjc
+    # mac_pyobjc_wheel = "https://files.pythonhosted.org/packages/18/55/d0971bccf8a5a347eaccf8caa4718766a68281baab83d2b5e211b2767504/pyobjc-11.0-py3-none-any.whl"
+
+    # pip install --platform macosx_11_0_arm64 --python-version 3.9 --target "C:\Users\shigg\AppData\Roaming\Anki2\addons21\Face Control simple\user_files\macOS" --only-binary=:all: pyobjc
+
+    # NOTE:
 
 
     ### linux python3-xlib ### (it's needed for pyautogui with linux.)
@@ -162,11 +167,11 @@ def download_wheel():
     pillow_wheel_path = os.path.join(wheels_folder, f"pillow_{os_type}_{machine_type}.whl")
 
     # Create paths (for Mac, pyobjc)
-    mac_pyobjc_wheel_path = ""
     mac_pyobjc_core_wheel_path = ""
+    mac_pyobjc_wheel_path = ""
     if os_type == "Darwin":
-        mac_pyobjc_wheel_path = os.path.join(wheels_folder, f"pyobjc_{os_type}_{machine_type}.whl")
         mac_pyobjc_core_wheel_path = os.path.join(wheels_folder, f"pyobjc_core_{os_type}_{machine_type}.whl")
+        mac_pyobjc_wheel_path = os.path.join(wheels_folder, f"pyobjc_{os_type}_{machine_type}.whl")
 
     # Create paths (shape_predictor)
     face_landmarks_dat_path = os.path.join(resources_folder, f"shape_predictor.dat")
@@ -198,16 +203,17 @@ def download_wheel():
 
 
     if os_type == "Darwin": # Mac
-        if mac_pyobjc_wheel: # pyobjc
-            with requests.get(mac_pyobjc_wheel, stream=True) as r:
-                with open(mac_pyobjc_wheel_path, 'wb') as f:
-                    for chunk in r.iter_content(chunk_size=1024*1024):
-                        f.write(chunk)
         if mac_pyobjc_core_wheel: # pyobjc-core
             with requests.get(mac_pyobjc_core_wheel, stream=True) as r:
                 with open(mac_pyobjc_core_wheel_path, 'wb') as f:
                     for chunk in r.iter_content(chunk_size=1024*1024):
                         f.write(chunk)
+        # if mac_pyobjc_wheel: # pyobjc
+        #     with requests.get(mac_pyobjc_wheel, stream=True) as r:
+        #         with open(mac_pyobjc_wheel_path, 'wb') as f:
+        #             for chunk in r.iter_content(chunk_size=1024*1024):
+        #                 f.write(chunk)
+
 
     # shape_predictor.dat
     with requests.get(face_landmarks_dat, stream=True) as r:
@@ -216,14 +222,17 @@ def download_wheel():
                 f.write(chunk)
 
     return (numpy_wheel_path, dlib_wheel_path, cv2_wheel_path,
-            pillow_wheel_path, mac_pyobjc_wheel_path, mac_pyobjc_core_wheel_path)
+            pillow_wheel_path, mac_pyobjc_core_wheel_path )
+            # pillow_wheel_path, mac_pyobjc_core_wheel_path, mac_pyobjc_wheel_path )
 
 def add_lib_folder_to_sys():
     # Add the lib folder to sys.path
     addon_path = os.path.dirname(__file__)
     lib_folder = os.path.join(addon_path, "user_files" , "lib") # downloaded modules
-    python3_xlib_folder = os.path.join(addon_path, "lib", "python3_xlib_lib") # python3_xlib
     pyautogui_lib_folder = os.path.join(addon_path, "lib", "pyautogui_lib") # pyautogui
+
+    python3_xlib_folder = os.path.join(addon_path, "lib", "python3_xlib_lib") # python3_xlib (linux)
+    mac_lib_folder =  os.path.join(addon_path, "lib", "mac_lib") # pyobjc (Mac)
 
     if lib_folder not in sys.path:
         # First, import the downloaded modules.
@@ -233,6 +242,10 @@ def add_lib_folder_to_sys():
         # python3_xlib is only needed on Linux.
         if python3_xlib_folder not in sys.path:
             sys.path.insert(0, python3_xlib_folder)
+
+    if platform.system() == "Darwin":
+        if mac_lib_folder not in sys.path:
+            sys.path.insert(0, mac_lib_folder)
 
     if pyautogui_lib_folder not in sys.path:
         # Next, import the pyautogui included in the add-on.
@@ -246,7 +259,8 @@ def unzipped_module():
 
     if not os.path.exists(lib_folder):
         (numpy_wheel_path, dlib_wheel_path, cv2_wheel_path,
-        pillow_wheel_path, mac_pyobjc_wheel_path, mac_pyobjc_core_wheel_path) = download_wheel()
+        pillow_wheel_path, mac_pyobjc_core_wheel_path) = download_wheel()
+        # pillow_wheel_path, mac_pyobjc_wheel_path, mac_pyobjc_core_wheel_path) = download_wheel()
 
         def extract_wheel(wheel_path, extract_to):
             with zipfile.ZipFile(wheel_path, "r") as zip_ref:
@@ -262,8 +276,8 @@ def unzipped_module():
             extract_wheel(pillow_wheel_path, lib_folder)
 
             if platform.system() == "Darwin":
-                extract_wheel(mac_pyobjc_wheel_path, lib_folder)
                 extract_wheel(mac_pyobjc_core_wheel_path, lib_folder)
+                # extract_wheel(mac_pyobjc_wheel_path, lib_folder)
 
             # After unzipping wheels, delete wheels.
             os.remove(numpy_wheel_path)
@@ -272,8 +286,8 @@ def unzipped_module():
             os.remove(pillow_wheel_path)
 
             if platform.system() == "Darwin":
-                os.remove(mac_pyobjc_wheel_path)
                 os.remove(mac_pyobjc_core_wheel_path)
+                # os.remove(mac_pyobjc_wheel_path)
 
             # Wait a bit until extract is complete.
             time.sleep(1)
@@ -289,7 +303,7 @@ def check_imports():
         import cv2 # type: ignore
         import PIL
         addon_path = os.path.dirname(__file__)
-        resources_folder = os.path.join(addon_path,  "user_files", "resources", "shape_predictor.dat")
+        resources_folder = os.path.join(addon_path, "user_files", "resources", "shape_predictor.dat")
         if not os.path.exists(resources_folder):
             return False
         return True
