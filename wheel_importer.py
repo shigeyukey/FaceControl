@@ -97,7 +97,7 @@ def download_wheel():
     # mac_pyobjc_wheel = "https://files.pythonhosted.org/packages/18/55/d0971bccf8a5a347eaccf8caa4718766a68281baab83d2b5e211b2767504/pyobjc-11.0-py3-none-any.whl"
 
     # pip install --platform macosx_11_0_arm64 --python-version 3.9 --target "C:\Users\shigg\AppData\Roaming\Anki2\addons21\Face Control simple\user_files\lib\mac_lib" --only-binary=:all: pyobjc
-    # NOTE: Control by pyautogu on Mac devices requires permission.
+    # NOTE: Control by pyautogui on Mac devices requires permission.
 
     ### linux python3-xlib ### (it's needed for pyautogui with linux.)
     # pip install python3-xlib --target path
